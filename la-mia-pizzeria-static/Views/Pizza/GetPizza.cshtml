@@ -1,0 +1,59 @@
+﻿@model Pizza
+
+@{
+    ViewData["Title"] = "Dettagli Pizza";
+}
+
+<style>
+    .card {
+        min-width: 1000px;
+    }
+</style>
+
+<h1 class="text-center my-5"><strong>Dettagli Pizza</strong></h1>
+<div class="row">
+        <div class="col-auto mx-auto">
+            <!-- Aggiunto mx-auto per centrare la colonna -->
+            <div class="card" style="height: 600px; border: 2px solid black; overflow: hidden; border-radius: 10px;">
+                @if (Model != null)
+                {
+                <img src="@Url.Content(Model.ImagePath)" class="card-img-top" alt="Foto Pizza" style="height: 100%; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>@Model.Name</strong></h5>
+                        <h6 class="card-title">
+                            <strong>Categoria:</strong>
+                            @Model.Category?.Name
+                        </h6>
+                        <h6 class="card-text">
+                            <strong>Ingredienti:</strong>
+                            @if (Model.Ingredients != null && Model.Ingredients.Any())
+                            {
+                                @* <span class="card-text">
+                                    @string.Join(", ", Model.Ingredients
+                                             .Where(pi => pi.Ingredients != null)
+                                             .Select(pi => pi.Ingredient.Name))
+                                </span> *@
+                            }
+                            else
+                            {
+                                <span>Nessun ingredienti disponibile.</span>
+                            }
+                        </h6>
+                        <h6 class="card-title"><strong>Descrizione:</strong> @Model.Description</h6>
+                    </div>
+                    <div class="card-footer p-3 border-top-0 text-end" style="background-color: #FFFFFF;">
+                        <h5 class="card-text">Prezzo: <strong>@Model.Price €</strong></h5>
+                    </div>
+                }
+                else
+                {
+                    <p>Unable to retrieve pizza details.</p>
+                }
+            </div>
+            <div class="text-end my-3">
+                <a asp-action="Index" class="btn btn-secondary">Torna Indietro</a>
+            </div>
+        </div>
+</div>
+
+

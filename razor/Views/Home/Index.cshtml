@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+
+    // Funzione per calcolare la somma da 1 a n
+    int CalcolaSomma(int n)
+    {
+        int somma = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            somma += i;
+        }
+        return somma;
+    }
+
+    // Funzione per contare quante volte appare la lettera 'a' nella frase
+    int ContaCarattere(string frase, char carattere)
+    {
+        //Count restituisce il numero di elementi all'interno di una sequenza che soddisfano una determinata condizione.
+        return frase.Count(c => c == carattere);
+    }
+
+    // Funzione per generare una lista di 20 numeri casuali tra 1 e 90
+    List<int> GeneraNumeriCasuali(int limite)
+    {
+        Random random = new Random();
+        List<int> numeri = new List<int>();
+        for (int i = 0; i < limite; i++)
+        {
+            numeri.Add(random.Next(1, 91));
+        }
+        return numeri;
+    }
+
+    // Funzione per filtrare i numeri compresi tra 20 e 70
+    List<int> FiltraNumeri(List<int> numeri)
+    {
+        return numeri.Where(num => num >= 20 && num <= 70).ToList();
+    }
+
+    // Funzione per ottenere la data e l'ora attuali
+    string GetDataOraAttuali()
+    {
+        return DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+    }
+
+    // Funzione per ottenere la data di 7 giorni fa
+    DateTime GetDataNGiorniFa(int giorni)
+    {
+        return DateTime.Today.AddDays(-giorni);
+    }
+
+    // Funzione per ottenere il giorno della settimana
+    string GetGiornoSettimana(DateTime data)
+    {
+        return data.ToString("dddd");
+    }
+
+    // Funzione per ottenere il giorno della settimana tra un anno
+    string GetGiornoSettimanaTraUnAnno()
+    {
+        return DateTime.Today.AddYears(1).ToString("dddd");
+    }
+
+}
+
+<div class="text-center">
+    <h1 class="display-4">Esercizi Razor</h1>
+</div>
+<div>
+        <!-- Esercizio 1 
+             Dichiarare una variabile valorizzandola con il nostro nome.
+             Dichiarare un'altra variabile valorizzandola con il nostro cognome.
+             Stampare il nostro nome e cognome all'interno di un tag h2. 
+        -->
+        @{
+            string nome = "Argel";
+            string cognome = "Dela Cruz";
+        }
+        <h2>@nome @cognome</h2>
+
+        <!-- Esercizio 2
+            Creare una funzione che stampa la somma dei numeri che vanno da 1 a n (con n passato come parametro - n incluso)
+            Stampare dentro uno span il risultato.
+        -->
+        @{
+            int n = 10; // Cambiare questo valore per testare la funzione
+            int somma = CalcolaSomma(n);
+        }
+        <span>La somma da 1 a @n è @somma.</span>
+
+        <!-- Esercizio 3
+             Contare quante volte la lettera a è presente nalla frase "nel mezzo del cammin di nostra vita" e stampare questo valore in pagina
+        -->
+        @{
+            string frase = "nel mezzo del cammin di nostra vita";
+            char carattere = 'a';
+            int countCarattere = ContaCarattere(frase, carattere);
+        }
+        <p>Il carattere '@carattere' compare @countCarattere volte nella frase: "@frase".</p>
+
+        <!-- Esercizio 4
+             Creare una List<int> di 20 numeri interi (generati random da 1 a 90, 1 e 90 inclusi) e mostrare in pagina solo i numeri compresi tra 20 e 70
+        -->
+        @{
+            int min = 1; 
+            int max = 90;
+            int limite = 20;
+            List<int> numeriGenerati = GeneraNumeriCasuali(limite);
+            List<int> numeriFiltrati = FiltraNumeri(numeriGenerati);
+        }
+        <p>Lista dei numeri random da @min - @max: @string.Join(", ", numeriGenerati)</p>
+        <p>Numeri compresi tra 20 e 70: @string.Join(", ", numeriFiltrati)</p>
+
+        <!-- Esercizio 5
+             Stampare in pagina la data e l'ora attuale (usando la classe DateTime) con il formato anno-mese-giorno ore:minuti:secondi
+        -->
+        @{
+            string dataOraAttuali = GetDataOraAttuali();
+        }
+        <p>Data e ora attuali: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</p>
+        
+        <!-- Esercizio 6
+             Partendo dalla data di oggi (usando la classe DateTime) stampare in pagina
+             a. la data di 7 giorni fa
+             b. che giorno della settimana è oggi (il risultato dovrà  essere il nome del giorno (Lunedì, Martedì, ...)
+             c. che giorno della settimana sarà  nello stesso giorno e mese di oggi ma tra un anno (il risultato dovrÃ  essere il nome del giorno (Lunedì, Martedì, ...)
+        -->
+        @{
+            DateTime setteGiorniFa = GetDataNGiorniFa(7);
+            string giornoSettimanaOggi = GetGiornoSettimana(DateTime.Today);
+            giornoSettimanaOggi = char.ToUpper(giornoSettimanaOggi[0]) + giornoSettimanaOggi.Substring(1);
+            string giornoSettimanaFuturo = GetGiornoSettimanaTraUnAnno();
+            giornoSettimanaFuturo = char.ToUpper(giornoSettimanaFuturo[0]) + giornoSettimanaFuturo.Substring(1);
+        }
+        <p>a. Data di 7 giorni fa: @setteGiorniFa.ToShortDateString()</p>
+        <p>b. Oggi è @giornoSettimanaOggi</p>
+        <p>c. Tra un anno sarà @giornoSettimanaFuturo</p>
+    </div>

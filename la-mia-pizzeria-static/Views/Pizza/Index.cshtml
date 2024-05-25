@@ -1,0 +1,92 @@
+﻿@using la_mia_pizzeria_static.Data
+@model IEnumerable<la_mia_pizzeria_static.Models.Pizza>
+
+@{
+    ViewData["Title"] = "Pizza Index";
+}
+
+<h1 class="text-center mt-5"><strong>Lista Pizze</strong></h1>
+<div class="card my-5">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            @if (User.IsInRole("ADMIN"))
+            {
+                <a href="@Url.Action("CreatePizza", "Pizza")" class="btn btn-primary">+ Crea nuova pizza</a>
+            }
+        </div>
+        <div>
+            <form asp-action="Search" method="post" class="d-flex">
+                <input onkeyup="searchPizza()" id="searchInput" type="text" name="searchString" class="form-control" placeholder="Cerca pizza..." />
+                <button type="submit" class="btn btn-primary ms-2">Cerca</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                @if (!string.IsNullOrEmpty(ViewData["SearchMessage"] as string))
+                {
+                    <span>@ViewData["SearchMessage"]</span>
+                }
+                else
+                {
+                    <span>Non ci sono pizze disponibili.</span>
+                }
+            </div>
+        }
+        else
+        {
+            <table class="table table-striped table-hover" id="pizzaTable">
+                <thead>
+                    <tr>
+                        <th>
+                            Nome
+                            <button onclick="toggleSortOrder(0)" class="btn btn-sm btn-light">▲▼</button>
+                        </th>
+                        <th>Descrizione</th>
+                        <th style="width: 100px;">Prezzo</th>
+                        <th style="width: 100px;">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pizza in Model)
+                    {
+                        <tr style="cursor: pointer;">
+                            <td>@pizza.Name</td>
+                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                @pizza.Description
+                            </td>
+                            <td>@pizza.Price.ToString("F2") €</td>
+                            <td class="actions-column">
+                                <div class="d-flex justify-content-evenly align-items-center">
+                                    <a href="@Url.Action("GetPizza", "Pizza", new { id = pizza.Id })" class="text-primary mx-1"><i class="fa-regular fa-eye"></i></a>
+                                    @if (User.IsInRole("ADMIN"))
+                                    {
+                                        <a href="@Url.Action("UpdatePizza", "Pizza", new { id = pizza.Id })" class="text-warning mx-1"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <a href="#" onclick="showDeleteModal('@Url.Action("DeletePizza", "Pizza", new { id = pizza.Id })', '@pizza.Name')" class="text-danger mx-1"><i class="fa-solid fa-trash-can"></i></a>
+
+
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button id="closeAlertButton" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Include delete modal -->
+@Html.Partial("_deleteModal")
+
+<!-- Include pizzaScript.js file -->
+<script src="~/js/pizzaScript.js"></script>

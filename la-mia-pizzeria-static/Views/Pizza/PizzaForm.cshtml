@@ -1,0 +1,75 @@
+﻿@using la_mia_pizzeria_static.Data
+@model la_mia_pizzeria_static.Models.PizzaFormModel
+
+@{
+    bool isEditMode = Model != null && Model.Pizza != null && Model.Pizza.Id != 0;
+    ViewData["Title"] = isEditMode ? "Modifica Pizza" : "Crea Pizza";
+}
+
+<h1 class="text-center mt-5"><strong>@ViewData["Title"]</strong></h1>
+
+<div class="card p-3">
+    <form asp-controller="Pizza" asp-action="@(isEditMode ? "UpdatePizza" : "CreatePizza")" method="post" enctype="multipart/form-data" class="row g-3">
+        <div class="form-group col-md-6">
+            <label asp-for="Pizza.Name">Nome pizza:</label>
+            <input asp-for="Pizza.Name" class="form-control mt-2 @(ViewData.ModelState["Pizza.Name"]?.Errors.Count > 0 ? "is-invalid" : "")" />
+            <span asp-validation-for="Pizza.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Pizza.Price">Prezzo:</label>
+            <input asp-for="Pizza.Price" class="form-control mt-2 @(ViewData.ModelState["Pizza.Price"]?.Errors.Count > 0 ? "is-invalid" : "")" />
+            <span asp-validation-for="Pizza.Price" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Pizza.ImagePath">Immagine:</label>
+            <input asp-for="Pizza.ImagePath" class="form-control mt-2 @(ViewData.ModelState["Pizza.ImagePath"]?.Errors.Count > 0 ? "is-invalid" : "")" />
+            <span asp-validation-for="Pizza.ImagePath" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="Pizza.CategoryId">Categoria:</label>
+            <select asp-for="Pizza.CategoryId" class="form-control mt-2 @(ViewData.ModelState["Pizza.CategoryId"]?.Errors.Count > 0 ? "is-invalid" : "")">
+                <option value="">Seleziona una categoria</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Id" selected="@(category.Id == Model.Pizza.CategoryId ? "selected" : null)">@category.Name</option>
+
+                }
+            </select>
+
+            <span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="Pizza.Description">Descrizione:</label>
+            <textarea asp-for="Pizza.Description" class="form-control mt-2 @(ViewData.ModelState["Pizza.Description"]?.Errors.Count > 0 ? "is-invalid" : "")"></textarea>
+            <span asp-validation-for="Pizza.Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label>Ingredienti:</label>
+            <div class="row mt-2">
+                @if (Model.Ingredients != null)
+                {
+                    @foreach (var ingredient in Model.Ingredients)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" role="switch" class="form-check-input" name="SelectedIngredients" value="@ingredient.Value"
+                                @(ingredient.Selected ? "checked" : "") />
+                                <label class="form-check-label">@ingredient.Text</label>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Nessun ingrediente disponibile</p>
+                }
+            </div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end mt-5">
+            <button type="submit" class="btn btn-primary mx-1">Salva</button>
+            <a asp-action="Index" class="btn btn-secondary mx-1">Torna Indietro</a>
+        </div>
+    </form>
+</div>
